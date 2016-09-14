@@ -20,6 +20,10 @@ execute sigmoid = go
         values' = VU.generate newCount new
 {-# INLINE execute #-}
 
+hybridize :: (Num a, VU.Unbox a) => a -> VU.Vector a -> VU.Vector a -> VU.Vector a
+hybridize a = VU.zipWith (\x y -> (1 - a) * x + a * y)
+{-# INLINE hybridize #-}
+
 step :: (Num a, Ord a) => a -> a
 step n = if n > 0 then 1 else 0
 {-# INLINE step #-}
