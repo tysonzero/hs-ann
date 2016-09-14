@@ -1,6 +1,6 @@
 {-# LANGUAGE BangPatterns #-}
 
-module Ann2 where
+module Ann where
 
 import qualified Data.Vector.Unboxed as VU
 
