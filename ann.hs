@@ -1,6 +1,6 @@
 module Ann where
 
-import Data.List (foldl')
+import Data.List (find, foldl')
 import Data.List.Split (chunksOf)
 
 type Ann a = [[[a]]]
@@ -13,6 +13,23 @@ fromList _ ns = []
 execute :: Num a => (a -> a) -> Ann a -> [a] -> [a]
 execute f = flip $ foldl' (fmap . (f . sum <$>) . zipWith (*) . (1 :))
 {-# INLINE execute #-}
+
+mutations :: Num a => Ann a -> a -> [Ann a]
+mutations (((v : zs) : ys) : xs) o
+    = (((v + o : zs) : ys) : xs) : (onHead (onHead (v :)) <$> mutations ((zs : ys) : xs) o)
+mutations (([] : ys) : xs) o = onHead ([] :) <$> mutations (ys : xs) o
+mutations ([] : xs) o = ([] :) <$> mutations xs o
+mutations [] _ = []
+
+optimize :: (Num a, Ord b) => (Ann a -> b) -> [a] -> Ann a -> [Ann a]
+optimize f os ann
+    | Just ann' <- find ((< cost) . f) (mutations ann =<< os) = ann' : optimize f os ann'
+    | otherwise = []
+    where cost = f ann
+
+onHead :: (a -> a) -> [a] -> [a]
+onHead f (x : xs) = f x : xs
+{-# INLINE onHead #-}
 
 step :: (Num a, Ord a) => a -> a
 step n = if n > 0 then 1 else 0
