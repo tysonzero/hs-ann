@@ -27,6 +27,10 @@ optimize f os ann
     | otherwise = []
     where cost = f ann
 
+hybridize :: Num a => a -> Ann a -> Ann a -> Ann a
+hybridize a = zipWith (zipWith (zipWith (\x y -> (1 - a) * x + a * y)))
+{-# INLINE hybridize #-}
+
 onHead :: (a -> a) -> [a] -> [a]
 onHead f (x : xs) = f x : xs
 {-# INLINE onHead #-}
