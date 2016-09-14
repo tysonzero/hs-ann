@@ -1,4 +1,3 @@
-import Control.Monad
 import qualified Data.Vector.Unboxed as VU
 
 import Ann
